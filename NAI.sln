@@ -2,6 +2,8 @@
 Microsoft Visual Studio Solution File, Format Version 12.00
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "KNN", "KNN\KNN.csproj", "{FCCF84DF-DE38-4198-9D71-07CFDEFF832E}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Perceptron", "Perceptron\Perceptron.csproj", "{3A76580B-83D3-4225-8A69-C1D6F6DF5E03}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -12,5 +14,9 @@ Global
 		{FCCF84DF-DE38-4198-9D71-07CFDEFF832E}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{FCCF84DF-DE38-4198-9D71-07CFDEFF832E}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{FCCF84DF-DE38-4198-9D71-07CFDEFF832E}.Release|Any CPU.Build.0 = Release|Any CPU
+		{3A76580B-83D3-4225-8A69-C1D6F6DF5E03}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{3A76580B-83D3-4225-8A69-C1D6F6DF5E03}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{3A76580B-83D3-4225-8A69-C1D6F6DF5E03}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{3A76580B-83D3-4225-8A69-C1D6F6DF5E03}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal
