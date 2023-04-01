@@ -54,9 +54,10 @@ internal class Program
             }
             if (Wektor.Count < _WectorWag.Count)
             {
+                Random random = new Random();
                 while (Wektor.Count < _WectorWag.Count)
                 {
-                    Wektor.Add(0);
+                    Wektor.Add(random.Next(0, 10));
                 }
             }
             double number = 0;
@@ -111,7 +112,6 @@ internal class Program
         public int BestAccuracy
         {
             get => _BestAccuracy;
-            set => _BestAccuracy = value;
         }
     }
     
@@ -256,6 +256,17 @@ internal class Program
             {
                 Arguments = wagi
             };
+
+            if (wagi.Count > perceptron.WectorWag.Count)
+            {
+                Console.Out.WriteLine("Characteristics contain more parameters than a perceptron, cutting characteristics for calculating...");
+            }
+            
+            if (wagi.Count < perceptron.WectorWag.Count)
+            {
+                Console.Out.WriteLine("Characteristics contain less parameters than a perceptron, supplementing characteristics for calculating...");
+            }
+            
             int percOut = perceptron.Calculate(flower.Arguments);
 
             flower.Type = percOut == 0 ? "Iris-versicolor" : "Iris-setosa";
