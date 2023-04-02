@@ -172,7 +172,7 @@ internal class Program
             if (incorrect.Count == 0)
             {
                 perceptron.SavePreset(accuracy);
-                perceptron.LoadPreset();
+                // perceptron.LoadPreset();
                 Epoki = i;
                 break;
             }
@@ -196,6 +196,7 @@ internal class Program
             perceptron.Learn(WektorWejsciowy, WyjscieOczekiwane);
             accuracy = 0;
         }
+        perceptron.LoadPreset();
         
         double finalAccuracy = (70.0 - (70.0 - accuracy))/70.0 * 100.0;
         Console.Out.WriteLine("Perceptron learned within " + Epoki + " epochs on the train-set with an accuracy = " + Math.Round(finalAccuracy,2) + "%");
