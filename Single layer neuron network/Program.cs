@@ -1,5 +1,7 @@
 ﻿using System.Text.RegularExpressions;
 
+namespace Single_layer_neuron_network;
+
 internal class Program
 {
     private static double alpha = 0.5;
@@ -10,8 +12,6 @@ internal class Program
 
     static void Main(string[] args)
     {
-        var languagesNames = new List<string>();
-        
         var languages = Directory.GetDirectories("Languages");
         var testLanguages = Directory.GetDirectories("LanguagesForTest");
 
@@ -25,11 +25,6 @@ internal class Program
                 Match match = Regex.Match(file, pattern);
                 text.SetUpProportions(file, match.Groups[0].Value);
                 TrainList.Add(text);
-                if (languagesNames.Contains(match.Groups[0].Value))
-                {
-                    continue;
-                }
-                languagesNames.Add(match.Groups[0].Value);
             }
         }
         
@@ -55,20 +50,16 @@ internal class Program
             Perceptrons.Add(per);
         }
 
-        // foreach (var perceptron in Perceptrons)
-        // {
-        //     Console.Out.WriteLine(perceptron.Ready + " " + perceptron.Epoki);
-        //     foreach (var waga in perceptron.WectorWag)
-        //     {
-        //         Console.Out.Write(waga + " ");
-        //     }
-        //
-        //     Console.Out.WriteLine();
-        // }
-        //
-        // Console.Out.WriteLine("===========================================");
 
-
+        Console.Out.WriteLine("Perceptrons (before learning):");
+        foreach (var perceptron in Perceptrons)
+        {
+            Console.Out.WriteLine(perceptron.Type + "\t" +  " |Ready? - "+ perceptron.Ready + ", epochs - " + perceptron.Epoki + "|");
+        }
+        
+        
+        
+        
         for (int i = 0; i < 1000; i++)
         {
             foreach (var perceptron in Perceptrons)
@@ -122,31 +113,28 @@ internal class Program
         {
             perceptron.LoadPreset();
         }
-        
 
-        // foreach (var perceptron in Perceptrons)
-        // {
-        //     Console.Out.WriteLine(perceptron.Ready + " " + perceptron.Epoki);
-        //     foreach (var waga in perceptron.WectorWag)
-        //     {
-        //         Console.Out.Write(waga + " ");
-        //     }
-        //
-        //     Console.Out.WriteLine();
-        // }
-
-
-
-
-
-        // Console.Out.WriteLine("\t" + "GERMAN" + "\t" + "Polish" + "\t" +"Spanish");
-        foreach (var language in languagesNames)
+        Console.Out.WriteLine();
+        Console.Out.WriteLine("Perceptrons (after learning on train-set):");
+        foreach (var perceptron in Perceptrons)
         {
-            Console.Out.Write("\t" + language + "\t");
+            Console.Out.WriteLine(perceptron.Type + "\t" +  " |Ready? - "+ perceptron.Ready + ", epochs - " + perceptron.Epoki + "|");
         }
         Console.Out.WriteLine();
-        int finalAccuracy = 0;
-        int errors = 0;
+        Console.Out.WriteLine("Test-set results:");
+        Console.Out.Write("\t\t");
+        
+        foreach (var perceptron in Perceptrons)
+        {
+            Console.Out.Write(perceptron.Type + "\t");
+        }
+        Console.Out.WriteLine();
+        
+        
+        
+        
+        int rightAnswers = 0;
+        int incorrectAnswers = 0;
         foreach (var text in TestList)
         {
             Console.Out.Write("Text " + text.Language + "\t");
@@ -155,7 +143,7 @@ internal class Program
             {
                 int ans = perceptron.MakeDecision(perceptron.CalculateNet(text.Proportions));
                 answers.Add(ans);
-                Console.Out.Write(perceptron.MakeDecision(perceptron.CalculateNet(text.Proportions)) + "\t");
+                //Console.Out.Write(perceptron.MakeDecision(perceptron.CalculateNet(text.Proportions)) + "\t");
             }
 
             if (answers.Sum() != 1)
@@ -170,33 +158,63 @@ internal class Program
                         activatedType = perceptron.Type;
                     }
                 }
-
                 if (activatedType != text.Language)
                 {
-                    errors++;
+                    incorrectAnswers++;
                 }
-                
-                
-                
-                
-                finalAccuracy++;
-                
-                
+                if (activatedType == text.Language)
+                {
+                    rightAnswers++;
+                }
+
+                foreach (var perceptron in Perceptrons)
+                {
+                    if (perceptron.Type == activatedType)
+                    {
+                        Console.Out.Write(1 + "\t");
+                    }
+                    else
+                    {
+                        Console.Out.Write(0 + "\t");
+                    }
+                }
             }
-            
-            
-            
-
+            else
+            {
+                rightAnswers++;
+                foreach (var perceptron in Perceptrons)
+                {
+                    Console.Out.Write(perceptron.MakeDecision(perceptron.CalculateNet(text.Proportions)) + "\t");
+                }
+            }
             Console.Out.WriteLine();
-            
-            
         }
-        
-        
-        
-        
+        Console.Out.WriteLine();
+        double finalAccuracy = (double)rightAnswers / ( double)TestList.Count * 100.0;
+        Console.Out.WriteLine("Accuracy of neuron network - " + Math.Round(finalAccuracy, 2) + "% with " + incorrectAnswers + " incorrect answers");
+        Console.Out.WriteLine();
 
-        
+        Console.Out.WriteLine("You can enter yours text to test neuron network (WARNING, нou must enter text that matches perceptron languages)");
+
+        while (true)
+        {
+            Console.Out.WriteLine("Enter the text: ");
+            var input = Console.ReadLine();
+            Text text = new Text();
+            text.SetUpProportionsConsole(input);
+            double maxNet = 0;
+            string activatedType = "";
+            foreach (var perceptron in Perceptrons)
+            {
+                if (maxNet < perceptron.CalculateNet(text.Proportions))
+                {
+                    maxNet = perceptron.CalculateNet(text.Proportions);
+                    activatedType = perceptron.Type;
+                }
+            }
+            Console.Out.WriteLine("Assigned language - " + activatedType);
+            Console.Out.WriteLine();
+        }
     }
     
     
@@ -345,6 +363,46 @@ internal class Program
             var lettersList = new List<char>();
             var text = File.ReadAllText(path);
             foreach (var symbol in text)
+            {
+                char letter = Char.ToUpper(symbol);
+                if (letter >= 65 && letter <= 90)
+                {
+                    lettersList.Add(letter);
+                }
+            }
+            _proportions.Add((double)lettersList.Count(c => c == 'A')/(double)lettersList.Count);
+            _proportions.Add((double)lettersList.Count(c => c == 'B')/(double)lettersList.Count);
+            _proportions.Add((double)lettersList.Count(c => c == 'C')/(double)lettersList.Count);
+            _proportions.Add((double)lettersList.Count(c => c == 'D')/(double)lettersList.Count);
+            _proportions.Add((double)lettersList.Count(c => c == 'E')/(double)lettersList.Count);
+            _proportions.Add((double)lettersList.Count(c => c == 'F')/(double)lettersList.Count);
+            _proportions.Add((double)lettersList.Count(c => c == 'G')/(double)lettersList.Count);
+            _proportions.Add((double)lettersList.Count(c => c == 'H')/(double)lettersList.Count);
+            _proportions.Add((double)lettersList.Count(c => c == 'I')/(double)lettersList.Count);
+            _proportions.Add((double)lettersList.Count(c => c == 'J')/(double)lettersList.Count);
+            _proportions.Add((double)lettersList.Count(c => c == 'K')/(double)lettersList.Count);
+            _proportions.Add((double)lettersList.Count(c => c == 'L')/(double)lettersList.Count);
+            _proportions.Add((double)lettersList.Count(c => c == 'M')/(double)lettersList.Count);
+            _proportions.Add((double)lettersList.Count(c => c == 'N')/(double)lettersList.Count);
+            _proportions.Add((double)lettersList.Count(c => c == 'O')/(double)lettersList.Count);
+            _proportions.Add((double)lettersList.Count(c => c == 'P')/(double)lettersList.Count);
+            _proportions.Add((double)lettersList.Count(c => c == 'Q')/(double)lettersList.Count);
+            _proportions.Add((double)lettersList.Count(c => c == 'R')/(double)lettersList.Count);
+            _proportions.Add((double)lettersList.Count(c => c == 'S')/(double)lettersList.Count);
+            _proportions.Add((double)lettersList.Count(c => c == 'T')/(double)lettersList.Count);
+            _proportions.Add((double)lettersList.Count(c => c == 'U')/(double)lettersList.Count);
+            _proportions.Add((double)lettersList.Count(c => c == 'V')/(double)lettersList.Count);
+            _proportions.Add((double)lettersList.Count(c => c == 'W')/(double)lettersList.Count);
+            _proportions.Add((double)lettersList.Count(c => c == 'X')/(double)lettersList.Count);
+            _proportions.Add((double)lettersList.Count(c => c == 'Y')/(double)lettersList.Count);
+            _proportions.Add((double)lettersList.Count(c => c == 'Z')/(double)lettersList.Count);
+        }
+
+        public void SetUpProportionsConsole(string input)
+        {
+            _language = "NP";
+            var lettersList = new List<char>();
+            foreach (var symbol in input)
             {
                 char letter = Char.ToUpper(symbol);
                 if (letter >= 65 && letter <= 90)
