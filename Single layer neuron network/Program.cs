@@ -5,9 +5,9 @@ namespace Single_layer_neuron_network;
 internal class Program
 {
     private static double alpha = 0.5;
-    private static List<Text> TrainList = new List<Text>();
-    private static List<Text> TestList = new List<Text>();
-    private static List<Perceptron> Perceptrons = new List<Perceptron>();
+    private static List<Text> TrainList = new();
+    private static List<Text> TestList = new();
+    private static List<Perceptron> Perceptrons = new();
 
 
     static void Main(string[] args)
@@ -120,6 +120,11 @@ internal class Program
         {
             Console.Out.WriteLine(perceptron.Type + "\t" +  " |Ready? - "+ perceptron.Ready + ", epochs - " + perceptron.Epoki + "|");
         }
+        
+        
+        
+        
+        
         Console.Out.WriteLine();
         Console.Out.WriteLine("Test-set results:");
         Console.Out.Write("\t\t");
@@ -129,9 +134,6 @@ internal class Program
             Console.Out.Write(perceptron.Type + "\t");
         }
         Console.Out.WriteLine();
-        
-        
-        
         
         int rightAnswers = 0;
         int incorrectAnswers = 0;
@@ -143,7 +145,6 @@ internal class Program
             {
                 int ans = perceptron.MakeDecision(perceptron.CalculateNet(text.Proportions));
                 answers.Add(ans);
-                //Console.Out.Write(perceptron.MakeDecision(perceptron.CalculateNet(text.Proportions)) + "\t");
             }
 
             if (answers.Sum() != 1)
@@ -190,7 +191,7 @@ internal class Program
             Console.Out.WriteLine();
         }
         Console.Out.WriteLine();
-        double finalAccuracy = (double)rightAnswers / ( double)TestList.Count * 100.0;
+        double finalAccuracy = (double)rightAnswers/(double)TestList.Count * 100.0;
         Console.Out.WriteLine("Accuracy of neuron network - " + Math.Round(finalAccuracy, 2) + "% with " + incorrectAnswers + " incorrect answers");
         Console.Out.WriteLine();
 
@@ -224,20 +225,18 @@ internal class Program
         private string _type;
         private int _epoki = 0;
         private bool _ready = false;
-        private List<double> _BestWektroWag = new List<double>();
+        private List<double> _BestWektroWag = new();
         private double _BestProg;
         private int _BestAccuracy = 0;
 
-        private List<double> _WectorWag = new List<double>();
+        private List<double> _WectorWag = new();
         private double _prog;
 
         public List<double> WectorWag
         {
-            get => _WectorWag;
             set => _WectorWag = value ?? throw new ArgumentNullException(nameof(value));
         }
-
-
+        
         public int Epoki
         {
             get => _epoki;
@@ -258,7 +257,6 @@ internal class Program
 
         public double Prog
         {
-            get => _prog;
             set => _prog = value;
         }
 
@@ -324,37 +322,19 @@ internal class Program
         }
     }
     
-    private static void SetupPerceptron(Perceptron perceptron)
-    {
-        List<double> wagi = new List<double>();
-        Random random = new Random();
-
-        for (int i = 0; i < TrainList.ElementAt(0).Proportions.Count(); i++)
-        {
-            wagi.Add(random.Next(0, 10));
-        }
-        double prog = random.Next(0, 3);
-        perceptron.Prog = prog;
-        perceptron.WectorWag = wagi;
-    }
-    
-    
-    
     private class Text
     {
         private string _language;
-        private List<double> _proportions = new List<double>();
+        private List<double> _proportions = new();
 
         public string Language
         {
             get => _language;
-            set => _language = value ?? throw new ArgumentNullException(nameof(value));
         }
 
         public List<double> Proportions
         {
             get => _proportions;
-            set => _proportions = value ?? throw new ArgumentNullException(nameof(value));
         }
 
         public void SetUpProportions(string path, string language)
@@ -437,12 +417,20 @@ internal class Program
             _proportions.Add((double)lettersList.Count(c => c == 'Y')/(double)lettersList.Count);
             _proportions.Add((double)lettersList.Count(c => c == 'Z')/(double)lettersList.Count);
         }
-        
-        
-        
     }
     
-    
-    
+    private static void SetupPerceptron(Perceptron perceptron)
+    {
+        List<double> wagi = new List<double>();
+        Random random = new Random();
+
+        for (int i = 0; i < TrainList.ElementAt(0).Proportions.Count(); i++)
+        {
+            wagi.Add(random.Next(0, 10));
+        }
+        double prog = random.Next(0, 3);
+        perceptron.Prog = prog;
+        perceptron.WectorWag = wagi;
+    }
     
 }
