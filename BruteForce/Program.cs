@@ -1,4 +1,6 @@
-﻿namespace BruteForce;
+﻿using System.Diagnostics.CodeAnalysis;
+
+namespace BruteForce;
 
 internal class Program
 {
@@ -26,7 +28,7 @@ internal class Program
             set => _waga = value;
         }
     }
-
+    
     static void Main(string[] args)
     {
         var path = @"C:\Users\r3mm1\Desktop\plecak.txt";
@@ -63,7 +65,6 @@ internal class Program
                 bin = extend;
             }
             
-            
             var tmpWartosc = 0;
             var tmpWeight = 0;
             var fit = true;
@@ -99,36 +100,5 @@ internal class Program
         Console.Out.WriteLine("Best value: " + _bestWartosc);
         Console.Out.WriteLine("Best weight: " + _bestWeight);
         Console.Out.WriteLine("Best combination (binary): " + _bestCombination);
-
-
-
-
-        // var test = Convert.ToString(3, 2);
-        // Console.Out.WriteLine(test);
-        // var tt = "";
-        // for (int i = 0; i < items.Count - test.Length; i++)
-        // {
-        //     tt += "0";
-        // }
-        //
-        // tt += test;
-        // test = tt;
-        // Console.Out.WriteLine(test);
-        // Console.Out.WriteLine(test.Length);
-
-
-
-
-        // var test = "011001001";
-        // Console.Out.WriteLine(items[1].Wartosc);
-        //
-        // Console.Out.WriteLine(test[1]);
-        // var t = Int32.Parse(test[1].ToString());
-        // Console.Out.WriteLine(t);
-        //
-        // Console.Out.WriteLine(items[t].Wartosc);
-
-
-
     }
 }
